@@ -1,0 +1,46 @@
+﻿
+@model Mediamart.Models.A_Export
+@{
+
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Đề xuất linh kiện</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("ActionChangeStatus", "A_Export", FormMethod.Post, new { area = "Admin", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            @Html.Label("Trạng thái", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.Status, new List<SelectListItem>{
+                                      new SelectListItem { Value = "0" , Text = "Thủ kho duyệt lại" },
+                                      new SelectListItem { Value = "1" , Text = "Kế toán duyệt lại" },
+                                      new SelectListItem { Value = "2" , Text = "QTV duyệt lại" },
+
+                           }, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center">
+                    @if (User.IsInRole("Admin") && Model.Status != 4)
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Xác nhận</button>
+                    }
+                    <button class="btn btn-danger" data-dismiss="modal"><i class="ti ti-close"></i> Thoát</button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>

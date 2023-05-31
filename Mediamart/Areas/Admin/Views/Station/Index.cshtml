@@ -1,0 +1,214 @@
+﻿@model Mediamart.Areas.Admin.Data.StationLevelListView
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<style>
+    thead tr th {
+        background-color: gray;
+        text-align: center;
+        color: white;
+        padding: 5px;
+    }
+</style>
+
+<!-- validation by Bootstrap -->
+<div class="card">
+    <div class="card-header">Form filter</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-name" class="col-form-label">Tìm kiếm</label>
+                            <div class="">
+                                <input type="text" class="form-control" name="textsearch" value="@ViewBag.textsearch">
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-filter"></i> Tìm kiếm</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Liên kết trạm BH</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Confirm", "Station", FormMethod.Post, new { area = "Admin", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <div class="form-group text-center">
+                    @if (User.IsInModule("user.changestation"))
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Lưu</button>
+
+                        <a class="btn btn-success" href="javascript:void(0);" id="addRowType" onclick="addRowType();"><i class="ti ti-plus" data-name="mdi-plus"></i> Thêm mới</a>
+
+                    }
+                </div>
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group row">
+
+                    <table style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>S1</th>
+                                <th>S2</th>
+                                <th>S3</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbltype">
+                            @for (var i = 0; i < Model.Items.Count(); i++)
+                            {
+                                var id = "trBooktype" + i;
+                                <tr id=@id>
+                                    <td class="hide">@Html.EditorFor(model => model.Items[i].Id, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                    <td>@Html.EditorFor(model => model.Items[i].S1, new { htmlAttributes = new { @class = "form-control", @onkeypress = "change1(" + i + ")" } })</td>
+                                    <td>@Html.EditorFor(model => model.Items[i].S2, new { htmlAttributes = new { @class = "form-control", @onkeypress = "change2(" + i + ")" } })</td>
+                                    <td>@Html.EditorFor(model => model.Items[i].S3, new { htmlAttributes = new { @class = "form-control", @onkeypress = "change3(" + i + ")" } })</td>
+                                    <td>
+                                        @if (User.IsInModule("user.changestation"))
+                                        {
+                                            <a href="/admin/station/delete?id=@Model.Items[i].Id" title="xoá liên kết" class="text-danger"><i class="ti ti-close"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+@section scripts{
+    <script>
+        function addRowType() {
+            var index = $("#tbltype").children("tr").length;
+            var s1 = '<td><input class="form-control " id="Items_' + index + '__S1" name="Items[' + index + '].S1" type="text" "/></td >';
+            var s2 = '<td><input class="form-control" id="Items_' + index + '__S2" name="Items[' + index + '].S2" type="text"/></td >';
+            var s3 = '<td><input class="form-control" id="Items_' + index + '__S3" name="Items[' + index + '].S3" type="text"/></td >';
+            var newRow = "<tr id='trBooktype" + index + "'>" + s1 + s2 + s3 + "</tr>";
+            $("#tbltype").before(newRow);
+            $("#Items_" + index + "__S1").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+            $("#Items_" + index + "__S2").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+            $("#Items_" + index + "__S3").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+        }
+        function change1(index) {
+            $("#Items_" + index + "__S1").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+        }
+        function change2(index) {
+            $("#Items_" + index + "__S2").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+        }
+        function change3(index) {
+            $("#Items_" + index + "__S3").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/Warranti/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName, value: item.UserName };
+                            }))
+
+                        }
+                    })
+
+                }
+            });
+        }
+
+    </script>
+}

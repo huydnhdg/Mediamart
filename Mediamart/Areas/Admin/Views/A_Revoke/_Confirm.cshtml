@@ -1,0 +1,113 @@
+﻿@model Mediamart.Areas.Admin.Data.Accessary.A_Revoke_Model
+@{
+    int index = 0;
+}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Phiếu hoàn xác linh kiện</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("ActionConfirm", "A_Revoke", FormMethod.Post, new { area = "Admin", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group row hidden">
+                            @Html.Label("Mã phiếu", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.WarrantiId </div>
+                        </div>
+                        <div class="form-group row hidden">
+                            @Html.Label("Mã phiếu", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.WarrantiCode </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Ngày tạo", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.Createdate</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Người tạo", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.Createby</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Ghi chú", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.Note</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Ngày duyệt", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.Successdate</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Người duyệt", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Model.Successby</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Ghi chú thêm", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control", } })</div>
+                        </div>
+                        @* fake để xử lý button *@
+                        <div class="form-group row hide">
+                            @Html.Label("Trạng thái", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.Editor("Status", new { htmlAttributes = new { @class = "form-control", } })</div>
+                        </div>
+                        
+
+
+                    </div>
+                    <div class="col-md-12 access">
+                        <table class="table table-bordered">
+                            <thead class="bg-danger" style="color:#fff">
+                                <tr>
+                                    <th>Mã LK</th>
+                                    <th>Tên LK</th>
+                                    <th>Model</th>
+                                    <th class="hidden">Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblBills">
+                                @foreach (var item in Model.Items)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@item.ProductCode</td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.ProductModel</td>
+                                        <td class="hidden">@item.Quantity</td>
+                                        <td>@item.Price.ToString("N0")</td>
+                                        <td>@item.Amount.ToString("N0")</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="form-group text-center">
+                    @if (Model.Status == 0)
+                    {
+                        <button type="submit" class="btn btn-primary" onclick="clickStatus(1)"><i class="ti ti-check"></i> Xác nhận</button>
+                        <button type="submit" class="btn btn-dark" onclick="clickStatus(2)"><i class="ti ti-trash"></i> Huỷ xác</button>
+                    }
+                    @if (User.IsInRole("Admin") && Model.Status == 1)
+                    {
+                        <button type="submit" class="btn btn-default" onclick="clickStatus(0)"><i class="ti ti-check"></i> Hủy xác nhận</button>
+                    }
+                    <button class="btn btn-danger" data-dismiss="modal"><i class="ti ti-close"></i> Thoát</button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function clickStatus(status) {
+        $("#Status").val(status);
+    }
+</script>

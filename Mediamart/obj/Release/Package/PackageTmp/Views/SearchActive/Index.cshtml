@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "tra cứu kích hoạt";
+}
+<div class="col-md-12 line-home text-center pt-5">
+    <img alt="Bảo hành điện tử Mediamart" src="~/Image/line-home.png" />
+    <h2 style="">TRA CỨU THÔNG TIN KÍCH HOẠT</h2>
+
+</div>
+
+<div class="row">
+    <div class="home-act-content col-md-6">
+        
+        <p>
+            Tra cứu nhanh bằng Serial trên tem bảo hành
+        </p>
+        <div style="overflow:hidden; padding-bottom:15px;">
+            <form>
+                <input class="form-control" type="text" required placeholder="Mã cào trên tem bảo hành" id="Code" name="Code" style="float:left;border-radius:unset" />
+                <button type="button" class="btn btn-send btn-info" onclick="sendForm()" style="float:left;border-top-right-radius:50rem;border-bottom-right-radius:50rem;"> TRA CỨU</button>
+            </form>
+        </div>
+
+
+        <p style="padding-top:15px;">Tra cứu bằng APP</p>
+        <div class="text-center">
+            <a href="#">
+                <img src="~/Image/android-download.jpg" class="img-responsive" alt="android-download" />
+            </a>
+            <a href="#">
+                <img src="~/Image/ios-download.jpg" class="img-responsive" alt="ios-download" />
+            </a>
+        </div>
+        <img src="~/image/ajax-loader.gif" class="loader" id="loader" style="display:none;" />
+        @*<div class="alert alert-success w3-animate-right" id="box-result" style="display:none;">
+                <div class="panel">
+                    <p class="message" id="rMessage"></p>
+                    <table class="table" id="table-result">
+                        <tr>
+                            <td>Tên sản phẩm </td>
+                            <td id="rName"></td>
+                        </tr>
+                        <tr>
+                            <td>Serial </td>
+                            <td id="rSerial"></td>
+                        </tr>
+                        <tr>
+                            <td>Model </td>
+                            <td id="rModel"></td>
+                        </tr>
+                        <tr>
+                            <td>Thương hiệu </td>
+                            <td id="rTrademark"></td>
+                        </tr>
+                        <tr>
+                            <td>Ngày kích hoạt </td>
+                            <td id="rActive_date"></td>
+                        </tr>
+                        <tr>
+                            <td>Hạn bảo hành </td>
+                            <td id="rLimited"></td>
+                        </tr>
+                        <tr>
+                            <td>Ngày hết hạn </td>
+                            <td id="rEnd_date"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>*@
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-6">
+        <img src="~/Image/banner-right.png" alt="active" class="img-responsive" />
+    </div>
+</div>
+<!-- MODAL CREATE -->
+<div class="modal" tabindex="-1" role="dialog" id="modal-search-active" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body" id="createbody">
+                <p class="message text-center title" id="rMessage">THÔNG TIN SẢN PHẨM</p>
+                <table class="table-active-success" id="table-result">
+                    <tr>
+                        <td>Tên sản phẩm: </td>
+                        <td id="rName"></td>
+                    </tr>
+                    <tr>
+                        <td>Serial: </td>
+                        <td id="rSerial"></td>
+                    </tr>
+                    <tr>
+                        <td>Model: </td>
+                        <td id="rModel"></td>
+                    </tr>
+                    <tr>
+                        <td>Thương hiệu: </td>
+                        <td id="rTrademark"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày kích hoạt: </td>
+                        <td id="rActive_date"></td>
+                    </tr>
+                    <tr>
+                        <td>Hạn bảo hành: </td>
+                        <td id="rLimited"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày hết hạn: </td>
+                        <td id="rEnd_date"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="text-center form-group">
+                <button class="btn btn-outline-light rounded-pill btn-doithuong" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["DOMAIN"]';
+        function sendForm() {
+            //reset result
+            $("#table-result").css("display", "none");
+            $("#box-result").css("display", "none");
+            $('#loader').css('display', 'block');
+
+            var serial = $('#Code').val();
+            $.ajax({
+                url: apiUrl + '/api/action/searchproduct?code=' + serial,
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    //hien thi message
+                    //$('#loader').css('display', 'none');
+                    //$("#box-result").css("display", "block");
+                    $('#modal-search-active').modal('show')
+                    $('#rMessage').html(result.Message);
+
+                    //hien thi thong tin san pham
+                    if (result.Data.length > 0) {
+                        var product = result.Data[0];
+                        $("#table-result").css("display", "block");
+                        $('#rName').html(product.Name);
+                        $('#rSerial').html(product.Code);
+                        $('#rModel').html(product.Model);
+                        $('#rTrademark').html(product.Trademark);
+                        $('#rActive_date').html(product.Activedate);
+                        $('#rLimited').html(product.Limited);
+                        $('#rEnd_date').html(product.Enddate);
+                    }
+                }
+            });
+
+        }
+    </script>
+}

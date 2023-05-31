@@ -1,0 +1,121 @@
+﻿@model Mediamart.Areas.Admin.Data.Accessary.Model_Export_Report
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Export";
+}
+<style>
+    tr td, th{
+        text-align:center;
+    }
+</style>
+
+@*<div class="card">
+    <div class="card-header">Form filter</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+            </div>
+
+        </div>
+    </div>
+</div>*@
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>Trạm đề xuất</th>
+                    <th>Tổng</th>
+                    <th>Mới tạo</th>
+                    <th>Thủ kho duyệt</th>
+                    <th>Kế toán duyệt</th>
+                    <th>QTV duyệt</th>
+                    <th>Hoàn thành</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Station)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.all</td>
+                        <td>@item.news</td>
+                        <td>@item.stocker</td>
+                        <td>@item.accountant</td>
+                        <td>@item.admin</td>
+                        <td>@item.success</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Tổng</th>
+                    <th>Mới tạo</th>
+                    <th>QTV duyệt</th>
+                    <th>Kế toán duyệt</th>
+                    <th>Thủ kho duyệt</th>
+                    <th>Hoàn thành</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.all</td>
+                        <td>@item.news</td>
+                        <td>@item.stocker</td>
+                        <td>@item.accountant</td>
+                        <td>@item.admin</td>
+                        <td>@item.success</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>Mã linh kiện</th>
+                    <th>Tổng</th>
+                    <th>Mới tạo</th>
+                    <th>QTV duyệt</th>
+                    <th>Kế toán duyệt</th>
+                    <th>Thủ kho duyệt</th>
+                    <th>Hoàn thành</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Accessary)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.all</td>
+                        <td>@item.news</td>
+                        <td>@item.stocker</td>
+                        <td>@item.accountant</td>
+                        <td>@item.admin</td>
+                        <td>@item.success</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

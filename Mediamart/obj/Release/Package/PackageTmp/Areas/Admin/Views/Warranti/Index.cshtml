@@ -1,0 +1,334 @@
+﻿@model PagedList.IPagedList<Mediamart.Areas.Admin.Data.WarrantiDetail>
+@using PagedList.Mvc;
+@using Mediamart.Utils
+@{
+    ViewBag.Title = "Warranti";
+    var index = 0;
+}
+
+
+<!-- validation by Bootstrap -->
+<div class="card">
+    <div class="card-header">Form filter</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-name" class="col-form-label">Tìm kiếm</label>
+                            <div class="">
+                                <input type="text" class="form-control" name="textsearch" value="@ViewBag.textsearch">
+                                <input type="text" class="form-control hide" name="status" value="@ViewBag.status">
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-name" class="col-form-label">Trạm bảo hành</label>
+                            <div class="">
+                                <input type="text" class="form-control" name="station" value="@ViewBag.station">
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-type" class="col-form-label">Nhóm sản phẩm</label>
+                            <div class="">
+                                @Html.DropDownList("cate", new SelectList(ViewBag.cate, "Name", "Name"), "--Chọn--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-type" class="col-sm-9 col-form-label">Kênh</label>
+                            <div class="">
+                                @Html.DropDownList("chanel", new List<SelectListItem>{
+                                new SelectListItem { Value = "" , Text = "--chọn--" },
+                                new SelectListItem { Value = "WEB" , Text = "WEB" },
+                                new SelectListItem { Value = "APP" , Text = "APP" },
+                                new SelectListItem { Value = "SMS" , Text = "SMS" },
+                                new SelectListItem { Value = "CMS" , Text = "CSKH" }}, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="ticket-type" class="col-sm-9 col-form-label">Tạo phiếu</label>
+                            <div class="input-daterange input-group" data-provide="datepicker" data-date-format="dd/mm/yyyy">
+                                <input class="form-control" name="start_date" value="@ViewBag.start_date">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input class="form-control" name="end_date" value="@ViewBag.end_date">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="ticket-type" class="col-sm-9 col-form-label">Hoàn thành</label>
+                            <div class="input-daterange input-group" data-provide="datepicker" data-date-format="dd/mm/yyyy">
+                                <input class="form-control" name="im_start_date" value="@ViewBag.im_start_date">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input class="form-control" name="im_end_date" value="@ViewBag.im_end_date">
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-filter"></i> Tìm kiếm</button>
+                    @if (User.IsInModule("warranti.add"))
+                    {
+                        <a class="btn btn-info" href="#" id="add"><i class="ti ti-plus"></i> Tạo mới</a>
+                        <a class="btn btn-success" href="/Admin/Warranti/Mediamart_Phieubaohanh"><i class="ti ti-export"></i> Xuất file</a>
+                    }
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+        <div class="col-md-12 text-right">
+            <div class="btn-group row">
+                <a href="/Admin/Warranti/Index?status=" class="btn btn-outline-light @(ViewBag.status == "" ? "active" : "")">Tất cả @ViewBag.countstatus.all</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.News" class="btn btn-outline-danger @(ViewBag.status == Common.Status.News.ToString() ? "active" : "")">Mới tạo @ViewBag.countstatus.s0</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Send" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Send.ToString() ? "active" : "")">Bàn giao đi @ViewBag.countstatus.chgstation1</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Station" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Station.ToString() ? "active" : "")">Chuyển trạm @ViewBag.countstatus.s2</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Recevice" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Recevice.ToString() ? "active" : "")">Bàn giao về @ViewBag.countstatus.chgstation2</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Feedback" class="btn btn-outline-secondary @(ViewBag.status == Common.Status.Feedback.ToString() ? "active" : "")">Chờ phản hồi @ViewBag.countstatus.s3</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Refuse" class="btn btn-outline-secondary @(ViewBag.status == Common.Status.Refuse.ToString() ? "active" : "")">Từ chối @ViewBag.countstatus.s4</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Processing" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Processing.ToString() ? "active" : "")">Đang xử lý @ViewBag.countstatus.s5</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Back" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Back.ToString() ? "active" : "")">Đem về trạm @ViewBag.countstatus.s6</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Accessary" class="btn btn-outline-warning @(ViewBag.status == Common.Status.Accessary.ToString() ? "active" : "")">Đợi linh kiện @ViewBag.countstatus.s7</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Fixed" class="btn btn-outline-info @(ViewBag.status == Common.Status.Fixed.ToString() ? "active" : "")">Sửa xong @ViewBag.countstatus.s8</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Outdate" class="btn btn-outline-danger @(ViewBag.status == Common.Status.Outdate.ToString() ? "active" : "")">Quá hạn @ViewBag.countstatus.outdate</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Cancel" class="btn btn-outline-dark @(ViewBag.status == Common.Status.Cancel.ToString() ? "active" : "")">Hủy bỏ @ViewBag.countstatus.s9</a>
+                <a href="/Admin/Warranti/Index?status=@Common.Status.Success" class="btn btn-outline-success @(ViewBag.status == Common.Status.Success.ToString() ? "active" : "")">Hoàn thành @ViewBag.countstatus.s1</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Phiếu bảo hành</th>
+                    <th>Thông tin khách hàng</th>
+                    <th>Thông tin sản phẩm</th>
+                    <th>Trạm bảo hành</th>
+                    <th>Kết quả</th>
+                    <th>Phí bảo hành</th>
+                    <th>Ghi chú</th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    index++;
+                    var today = DateTime.Now.AddDays(3);
+                    //var isStatus = (item.FirstChange == User.Identity.Name && item.WarrantiStation.FirstOrDefault().Status != 3) ? true : false;
+                    <tr>
+                        <td style="display:none">@item.Id</td>
+                        <td>@index</td>
+                        <td>
+                            <a href="javascript:void(0)" class="logs">@item.Code</a><br />
+                            @item.Createdate.Value.ToString("dd/MM/yyyy hh:mm")<br />
+                            @item.Chanel<br />
+                            @*@if (item.WarrantiStation.FirstOrDefault() != null && item.WarrantiStation.FirstOrDefault().Status < 0)
+                            {
+                                <span class="alert-info">Bàn giao đi</span>
+                            }*@
+                            @if (item.Status == Common.Status.News)
+                            {
+                                <span class="alert-danger">Mới tạo</span>
+                            }
+                            else if (item.Status == Common.Status.Success)
+                            {
+                                <span class="alert-success">Hoàn thành</span>
+                            }
+                            else if (item.Status == Common.Status.Station)
+                            {
+                                <span class="alert-primary">Chuyển trạm</span>
+                            }
+                            else if (item.Status == Common.Status.Feedback)
+                            {
+                                <span class="alert-dark">Chờ phản hồi</span>
+                            }
+                            else if (item.Status == Common.Status.Refuse)
+                            {
+                                <span class="alert-dark">Từ chối</span>
+                            }
+                            else if (item.Status == Common.Status.Processing)
+                            {
+                                if (item.Deadline < today)
+                                {
+                                    <span class="alert-danger">Quá hạn</span>
+                                }
+                                else
+                                {
+                                    <span class="alert-warning">Đang xử lý</span>
+                                }
+
+                            }
+                            else if (item.Status == Common.Status.Back)
+                            {
+                                <span class="alert-warning">Đem về trạm</span>
+                            }
+                            else if (item.Status == Common.Status.Accessary)
+                            {
+                                <span class="alert-warning">Đợi linh kiện</span>
+                            }
+                            else if (item.Status == Common.Status.Fixed)
+                            {
+                                <span class="alert-info">Sửa xong</span>
+                            }
+                            else if (item.Status == Common.Status.Cancel)
+                            {
+                                <span class="alert-dark">Hủy bỏ</span>
+                            }
+                            else if (item.Status == Common.Status.Send)
+                            {
+                                <span class="alert-info">Bàn giao đi</span>
+                            }
+                            else if (item.Status == Common.Status.Recevice || item.Status == -3)
+                            {
+                                <span class="alert-info">Bàn giao về</span>
+                            }
+                            <br />
+                            @item.Warranti_Cate<br />
+                            @item.Note<br />
+                            @item.Createby
+                        </td>
+                        <td>
+                            @item.Phone @item.PhoneExtra<br />
+                            @item.CusName<br />
+                            @item.Address<br />
+
+                        </td>
+                        <td>
+                            @item.ProductName<br />
+                            @item.ProductCode - @item.Serial<br />
+                            @item.Model<br />
+                            @item.ProductCate
+                        </td>
+                        <td>
+                            @item.Station_Warranti - @item.Station<br />
+                            @item.KTV_Warranti - @item.KTV<br />
+                            @if (item.Deadline != null)
+                            {
+                                <span class="text-info">@item.Deadline.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Successdate != null)
+                            {
+                                <span class="text-success">@item.Successdate.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                            <br />
+                            @item.Successnote
+                        </td>
+                        <td>
+                            <a title="tổng tiền"><span class="text-success">@item.Amount.ToString("N0")</span><br /></a>
+                            <a title="tiền dịch vụ">
+                                @item.Price.ToString("N0")
+                            </a>
+                            <br />
+                            <a title="tiền di chuyển">
+                                @item.Price_Move.ToString("N0")
+                            </a>
+                            <br />
+                            <a title="tiền linh kiện">
+                                @item.Price_Accessary.ToString("N0")
+                            </a>
+                            <br />
+                            <a title="dv tại nhà">
+                                @item.Price_Home.ToString("N0")
+                            </a>
+                        </td>
+                        <td>
+                            @item.SuccessExtra
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-outline-info views" href="#"><i class="ti-receipt"></i></a>
+                                @if (User.IsInModule("warranti.edit"))
+                                {
+                                    <a class="btn btn-outline-light edit" href="#"><i class="ti ti-pencil-alt"></i></a>
+                                }
+                                <a class="btn btn-outline-primary" href="/Admin/Warranti/Detail/@item.Id"><i class="ti ti-comment-alt"></i></a>
+                                @if (User.IsInModule("warranti.delete"))
+                                {
+                                    <a class="btn btn-outline-light" href="/Admin/Warranti/Delete/@item.Id" onclick="return confirm('Xác nhận xoá?')"><i class="ti ti-trash"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="showing">Showing @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</div>
+            </div>
+            <div class="col-sm-6">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, textsearch = ViewBag.textsearch, station = ViewBag.station, chanel = ViewBag.chanel, status = ViewBag.status, start_date = ViewBag.start_date, end_date = ViewBag.end_date, im_start_date = ViewBag.im_start_date, im_end_date = ViewBag.im_end_date }))
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(".logs").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Warranti/ViewLog",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#add").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Warranti/Create",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#table .edit").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Warranti/Edit",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#table .views").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Warranti/Views",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+    </script>
+
+}

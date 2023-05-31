@@ -1,0 +1,134 @@
+﻿@model Mediamart.Areas.Admin.Data.Accessary.A_Export_Model
+@{
+    ViewBag.Title = "A_Center";
+    int index = 0;
+}
+<style>
+    tr td{
+        color:gray;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Form</div>
+                <div class="card-body">
+                    @using (Html.BeginForm("ExportUploadFile", "A_Center", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="input-group mb-3">
+                            <div class="col-md-8">
+                                <input type="file" name="UploadedFile" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> Upload</button>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="col-md-6">
+                                <a href="~/File/temp_export.xlsx" class="btn btn-outline-warning"><i class="ti ti-file"></i> File mẫu</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Database</div>
+                <div class="card-body">
+                    <div class="col-6">
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Trung tâm
+                            </div>
+                            <div class="col-8">
+                                @Model.Center
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Hub
+                            </div>
+                            <div class="col-8">
+                                @Model.Hub
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Người nhận
+                            </div>
+                            <div class="col-8">
+                                @Model.CusName
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Kho nhận
+                            </div>
+                            <div class="col-8">
+                                @Model.Import_Warehouse
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Địa chỉ
+                            </div>
+                            <div class="col-8">
+                                @Model.Address
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Xuất tại kho
+                            </div>
+                            <div class="col-8">
+                                @Model.Export_Warehouse
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4">
+                                Ghi chú
+                            </div>
+                            <div class="col-8">
+                                @Model.Note
+                            </div>
+                        </div>
+                    </div>
+                    <table class="col-md-12 table table-bordered" style="color:#fff">
+                        <thead class="bg-danger">
+                            <tr>
+                                <th>#</th>
+                                <th>Model</th>
+                                <th>Mã LK</th>
+                                <th>Tên LK</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblBills">
+                            @foreach (var item in Model.Items)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@item.ProductModel</td>
+                                    <td>@item.ProductCode</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Amount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

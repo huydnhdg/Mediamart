@@ -1,0 +1,259 @@
+﻿@model PagedList.IPagedList<Mediamart.Areas.Admin.Data.A_Export_ListView>
+@using PagedList.Mvc;
+@using Mediamart.Utils;
+@{
+    ViewBag.Title = "Export";
+    int index = 0;
+}
+
+<div class="card">
+    <div class="card-header">Form filter</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-name" class="col-form-label">Tìm kiếm</label>
+                            <div class="">
+                                <input type="text" class="form-control" name="textsearch" value="@ViewBag.textsearch">
+                                <input type="text" class="form-control hide" name="chanel" value="@ViewBag.chanel">
+                            </div>
+                        </div>
+                        @if (User.IsInModule("export"))
+                        {
+                            <div class="col-md-2 mb-2">
+                                <label for="ticket-type" class="col-sm-9 col-form-label">Trạm bảo hành</label>
+                                <div class="">
+                                    @Html.DropDownList("station", new SelectList(ViewBag.ls_station, "UserName", "UserName"), "--Chọn--", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+
+                        <div class="col-md-3 mb-3">
+                            <label for="ticket-type" class="col-sm-9 col-form-label">Ngày tạo</label>
+                            <div class="input-daterange input-group" data-provide="datepicker" data-date-format="dd/mm/yyyy">
+                                <input class="form-control" name="start_date" value="@ViewBag.start_date">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input class="form-control" name="end_date" value="@ViewBag.end_date">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-filter"></i> Tìm kiếm</button>
+                    @if (User.IsInModule("station.add"))
+                    {
+                        <a class="btn btn-info" href="/admin/a_station/create"><i class="ti ti-plus"></i> Đề xuất</a>
+                    }
+                    @if (User.IsInModule("export.report"))
+                    {
+                        <a class="btn btn-warning" href="/admin/a_export/report"><i class="ti ti-receipt"></i> Báo cáo</a>
+                    }
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+        <div class="col-md-12 text-right">
+            <div class="btn-group row">
+                <a href="/Admin/A_Export/Index?chanel=" class="btn btn-outline-light @(ViewBag.chanel == "" ? "active" : "")">Tất cả @ViewBag.countstatus.all</a>
+                <a href="/Admin/A_Export/Index?chanel=0" class="btn btn-outline-danger @(ViewBag.chanel == "0" ? "active" : "")">Mới tạo @ViewBag.countstatus.s0</a>
+                <a href="/Admin/A_Export/Index?chanel=1" class="btn btn-outline-warning @(ViewBag.chanel == "1" ? "active" : "")">Thủ kho duyệt @ViewBag.countstatus.s1</a>
+                <a href="/Admin/A_Export/Index?chanel=2" class="btn btn-outline-warning @(ViewBag.chanel == "2" ? "active" : "")">Kế toán duyệt @ViewBag.countstatus.s2</a>
+                <a href="/Admin/A_Export/Index?chanel=3" class="btn btn-outline-primary @(ViewBag.chanel == "3" ? "active" : "")">QTV duyệt @ViewBag.countstatus.s3</a>
+                <a href="/Admin/A_Export/Index?chanel=4" class="btn btn-outline-primary @(ViewBag.chanel == "4" ? "active" : "")">Đang vận chuyển @ViewBag.countstatus.s4</a>
+                <a href="/Admin/A_Export/Index?chanel=5" class="btn btn-outline-success @(ViewBag.chanel == "5" ? "active" : "")">Hoàn thành @ViewBag.countstatus.s5</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Người nhận</th>
+                    <th>Mã phiếu</th>
+                    <th>Trạm đề xuất</th>
+                    <th>Ngày đề xuất</th>
+                    <th>Số lượng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú</th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td style="display:none">@item.Id</td>
+                        <td>@index</td>
+                        <td>@item.CusName</td>
+                        <td>
+                            <a href="/admin/warranti/detail/@item.WarrantiId" title="phiếu bảo hành">@item.Code</a>
+                        </td>
+                        <td>@item.Import_Warehouse</td>
+                        <td>
+                            @if (item.Createdate != null)
+                            {@item.Createdate.Value.ToString("dd/MM/yyyy")}
+                        </td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            @item.Amount.ToString("N0")
+                        </td>
+                        <td>
+                            @if (User.IsInModule("export.changestatus"))
+                            {
+                                <a href="javascript:void(0)" class="changestatus">
+                                    @if (item.Status == 0)
+                                    {
+                                        <span class="text-danger">Mới tạo</span>
+                                    }
+                                    else if (item.Status == 1)
+                                    {
+                                        <span class="text-warning">Thủ kho duyệt</span>
+                                    }
+                                    else if (item.Status == 2)
+                                    {
+                                        <span class="text-warning">Kế toán duyệt</span>
+                                    }
+                                    else if (item.Status == 3)
+                                    {
+                                        <span class="text-primary">QTV duyệt</span>
+                                    }
+                                    else if (item.Status == 4)
+                                    {
+                                        <span class="text-primary">Đang vận chuyển</span>
+                                    }
+                                    else if (item.Status == 5)
+                                    {
+                                        <span class="text-success">Hoàn thành</span>
+                                    }
+
+
+                                </a>
+                            }
+                            else
+                            {
+                                if (item.Status == 0)
+                                {
+                                    <span class="text-danger">Mới tạo</span>
+                                }
+                                else if (item.Status == 1)
+                                {
+                                    <span class="text-warning">Thủ kho duyệt</span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span class="text-warning">Kế toán duyệt</span>
+                                }
+                                else if (item.Status == 3)
+                                {
+                                    <span class="text-primary">QTV duyệt</span>
+                                }
+                                else if (item.Status == 4)
+                                {
+                                    <span class="text-primary">Đang vận chuyển</span>
+                                }
+                                else if (item.Status == 5)
+                                {
+                                    <span class="text-success">Hoàn thành</span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.Note
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @if (User.IsInRole(Mediamart.Utils.Common.Roles.ADMIN))
+                                {
+                                    <a class="btn btn-outline-light confirm" href="#"><i class="ti ti-pencil-alt"></i></a>
+                                }
+                                @if (User.IsInRole(Mediamart.Utils.Common.Roles.STOCKER))
+                                {
+                                    <a class="btn btn-outline-light confirm" href="#"><i class="ti ti-pencil-alt"></i></a>
+                                }
+                                @if (User.IsInRole(Mediamart.Utils.Common.Roles.ACCOUNTANT))
+                                {
+                                    <a class="btn btn-outline-light confirm" href="#"><i class="ti ti-pencil-alt"></i></a>
+                                }
+                                @if (User.IsInRole(Mediamart.Utils.Common.Roles.KEY))
+                                {
+                                    <a class="btn btn-outline-light confirm" href="#"><i class="ti ti-pencil-alt"></i></a>
+                                }
+
+                                <a class="btn btn-outline-light viewlog" href="#"><i class="ti ti-timer"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="showing">Showing @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</div>
+            </div>
+            <div class="col-sm-6">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, textsearch = ViewBag.textsearch, station = ViewBag.station, chanel = ViewBag.chanel, status = ViewBag.status, start_date = ViewBag.start_date, end_date = ViewBag.end_date }))
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+        $("#table .confirm").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/A_Export/ViewConfirm",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#table .changestatus").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/A_Export/ChangeStatus",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#table .viewlog").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/A_Export/ViewLog",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "tra cứu bảo hành";
+}
+<div class="col-md-12 line-home text-center pt-5">
+    <img alt="Bảo hành điện tử Mediamart" src="~/Image/line-home.png" />
+    <h2 style="">TRA CỨU THÔNG TIN BẢO HÀNH</h2>
+
+</div>
+
+<div class="row">
+    <div class="home-act-content col-md-6">
+        
+        <p>
+            Tra cứu nhanh bằng mã cào trên tem bảo hành
+        </p>
+        <div style="overflow:hidden; padding-bottom:15px;">
+            <form>
+                <input class="form-control" type="text" required placeholder="Nhập số điện thoại bảo hành" id="Phone" name="Phone" style="float:left;border-radius:unset" />
+                <button type="button" class="btn btn-send btn-info" onclick="sendForm()" style="float:left;border-top-right-radius:50rem;border-bottom-right-radius:50rem;"> TRA CỨU</button>
+            </form>
+        </div>
+
+        <p style="padding-top:15px;">Tra cứu bằng APP</p>
+        <div class="text-center">
+            <a href="#">
+                <img src="~/Image/android-download.jpg" class="img-responsive" alt="android-download" />
+            </a>
+            <a href="#">
+                <img src="~/Image/ios-download.jpg" class="img-responsive" alt="ios-download" />
+            </a>
+        </div>
+        <img src="~/image/ajax-loader.gif" class="loader" id="loader" style="display:none;" />
+        <div class="alert alert-success w3-animate-right" id="box-result" style="display:none;">
+            <div class="panel">
+                <p class="message" id="rMessage"></p>
+                <table class="table" id="table-result">
+                    <tr>
+                        <td>Trạng thái </td>
+                        <td id="wStatus"></td>
+                    </tr>
+                    <tr>
+                        <td>Mã Phiếu BH </td>
+                        <td id="wProductCode"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày tạo </td>
+                        <td id="wCreatedate"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày hết hạn </td>
+                        <td id="wDeadline"></td>
+                    </tr>
+                    <tr>
+                        <td>Trạm tiếp nhận</td>
+                        <td id="wStation"></td>
+                    </tr>
+                    <tr>
+                        <td>Kỹ thuật viên </td>
+                        <td id="wKTV"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày hoàn thành</td>
+                        <td id="wSuccess"></td>
+                    </tr>
+                    <tr>
+                        <td>Kết quả</td>
+                        <td id="wNote"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-6">
+        <img src="~/Image/banner-right.png" alt="active" class="img-responsive" />
+    </div>
+    </div>
+    @section scripts{
+        <script>
+        var apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["DOMAIN"]';
+        function sendForm() {
+            //reset result
+            $("#table-result").css("display", "none");
+            $("#box-result").css("display", "none");
+            $('#loader').css('display', 'block');
+
+            var serial = $('#Phone').val();
+            $.ajax({
+                url: apiUrl + '/api/action/searchwarranti?phone=' + serial,
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    //hien thi message
+                    $('#loader').css('display', 'none');
+                    $("#box-result").css("display", "block");
+                    $('#rMessage').html(result.Message);
+
+                    //hien thi thong tin san pham
+                    if (result.Data.length > 0) {
+                        var product = result.Data[0];
+                        $("#table-result").css("display", "block");
+                        $('#wStatus').html(product.Status);
+                        $('#wProductCode').html(product.Code);
+                        $('#wCreatedate').html(product.Createdate);
+                        $('#wDeadline').html(product.Deadline);
+                        $('#wStation').html(product.Station_Warranti);
+                        $('#wKTV').html(product.KTV_Warranti);
+                        $('#wSuccess').html(product.Successdate);
+                        $('#wNote').html(product.Successnote);
+                    }
+                }
+            });
+        }
+        function checkPhone() {
+            $('#cErr').css('display', 'none');
+            var phone = $("#cPhone").val();
+            if (phone.length != 10) {
+                $('#cErr').html('Số điện thoại không đúng.');
+                $('#cErr').css('display', 'block');
+            }
+            else {
+                $('#modal-start').modal('hide');
+                $('#cErr').css('display', 'none');
+                $.ajax
+                    ({
+                        url: apiUrl + '/api/action/getcustomer?phone=' + phone,
+                        type: 'GET',
+                        datatype: 'application/json',
+                        contentType: 'application/json',
+                        success: function (result) {
+                            $('#Province').empty();
+                            $('#District').empty();
+                            $('#Ward').empty();
+                            $("#Address").val("");
+                            if (result.Data.length > 0) {
+                                var product = result.Data[0];
+                                if (product.Province.length > 3) {
+                                    $('#Phone').val(phone);
+                                    $('#Province').append(new Option(product.Province, product.Province, true, true));
+                                    $('#District').append(new Option(product.District, product.District, true, true));
+                                    $('#Ward').append(new Option(product.Ward, product.Ward, true, true));
+                                    $("#Address").val(product.Address);
+                                    $("#CusName").val(product.Name);
+                                }
+                            }
+
+                        }
+                    });
+
+            }
+        }
+        </script>
+    }

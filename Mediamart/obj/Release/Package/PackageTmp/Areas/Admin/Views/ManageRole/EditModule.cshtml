@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Mediamart.Areas.Admin.Data.ModuleView>
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<style>
+    select {
+        min-height: 500px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Form Edit Module</div>
+                <div class="card-body col-6">
+                    <h5><strong>Các Module hiện tại của quyền @ViewBag.RoleId:</strong> </h5>
+                    <table class="table table-bordered table-info">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count() > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Description</td>
+                                        <td>
+                                            <form action="@Url.Action("DeleteModuleFromRole", new { RoleId = item.RoleId, ModuleId = item.ModuleId })" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-xs btn-danger">Gỡ bỏ</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2">
+                                        <p>Quyền này chưa có Module nào</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <h5><strong>Thêm Module cho quyền này:</strong></h5>
+                    <form action="@Url.Action("AddToModule")" method="post">
+                        <input type="hidden" name="RoleId" value="@ViewBag.RoleId" />
+                        @Html.AntiForgeryToken()
+                        @Html.ListBox("ModuleId", null, new { @class = "form-control", multiple = "multiple" })
+                        <div class="form-group">
+                            <br />
+                            <button type="submit" class="btn btn-primary">Thêm </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

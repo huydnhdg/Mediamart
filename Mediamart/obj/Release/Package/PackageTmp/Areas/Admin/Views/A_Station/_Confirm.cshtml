@@ -1,0 +1,206 @@
+﻿@model Mediamart.Areas.Admin.Data.Accessary.A_Export_Model
+@{
+    int index = 0;
+}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Đề xuất linh kiện</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Create", "A_Station", FormMethod.Post, new { area = "Admin", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group row hidden">
+                            @Html.Label("Mã phiếu BH", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.Editor("WarrantiCode", new { htmlAttributes = new { @class = "form-control", @Value = @ViewBag.Warranti.Code } })</div>
+                        </div>
+                        <div class="form-group row hidden">
+                            @Html.Label("Mã phiếu BH", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.WarrantiId, new { htmlAttributes = new { @class = "form-control", @Value = @ViewBag.Warranti.Id } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Trung tâm", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Center, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("hub", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Hub, new { htmlAttributes = new { @class = "form-control", @Value=Model.Hub } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Tên người nhận", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.CusName, new { htmlAttributes = new { @class = "form-control", @Value=Model.CusName } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Kho nhận", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Import_Warehouse, new { htmlAttributes = new { @class = "form-control", @Value = User.Identity.Name } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Địa chỉ", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @Value = Model.Address } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Xuất tại kho", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Export_Warehouse, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Lý do xuất", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 access">
+                        <table class="col-md-12 table table-bordered" style="color:#fff">
+                            <thead class="bg-danger">
+                                <tr>
+                                    <th>Model</th>
+                                    <th>Mã LK</th>
+                                    <th>Tên LK</th>
+                                    <th class="hidden">Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Mã phiếu BH</th>
+                                    <th>Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody id="m_tblBills">
+                                @for (var i = 0; i < Model.Items.Count(); i++)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductModel, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductCode, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductName, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td class="hidden">@Html.EditorFor(model => model.Items[i].Quantity, new { htmlAttributes = new { @class = "form-control", @Value = "1" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].Price, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].WarrantiCode, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].Note, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                            <a href="javascript:void(0)" id="addRow" style="font-size:21px;font-weight:bold" class="text-danger" onclick="m_addRow();"><i class="ti-plus" data-name="mdi-plus"></i> </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Đề xuất</button>
+                    <button class="btn btn-danger" data-dismiss="modal"><i class="ti ti-close"></i> Thoát</button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function m_addRow() {
+        var warr_code = $("#WarrantiCode").val();
+        var index = $("#m_tblBills").children("tr").length;
+
+        //var code = '<td><select onchange="changeCode(this.id)" class="form-control" id="Items_' + index + '__ProductCode" name="Items[' + index + '].ProductCode"><option value="">--Select--</option></select></td>'
+        var model = '<td><input class="form-control" id="Items_' + index + '__ProductModel" name="Items[' + index + '].ProductModel" type="text" onchange="changeModel(this.id)"/></td >';
+        var code = '<td><input class="form-control" id="Items_' + index + '__ProductCode" name="Items[' + index + '].ProductCode" type="text" /></td >';
+        var name = '<td><input class="form-control" id="Items_' + index + '__ProductName" name="Items[' + index + '].ProductName" type="text" /></td >';
+        //var model = '<td><input class="form-control" id="Items_' + index + '__ProductModel" name="Items[' + index + '].ProductModel" type="text" /></td >';
+        var qty = '<td class="hidden"><input class="form-control" id="Items_' + index + '__Quantity" name="Items[' + index + '].Quantity" type="number" value="1" /></td >';
+        var price = '<td><input class="form-control" id="Items_' + index + '__Price" name="Items[' + index + '].Price" type="number" /></td >';
+        var warr = '<td><input class="form-control" id="Items_' + index + '__WarrantiCode" name="Items[' + index + '].WarrantiCode" type="text" value="' + warr_code + '"/></td >';
+        var note = '<td><input class="form-control" id="Items_' + index + '__Note" name="Items[' + index + '].Note" type="text" /></td >';
+
+        var newRow = "<tr id='m_trBook" + index + "'>" + model + code + name + qty + price + warr + note + "</tr>";
+        $("#m_tblBills").append(newRow);
+
+        $("#Items_" + index + "__ProductCode").autocomplete({
+            source: function (request, response) {
+                var model = $("#Items_" + index + "__ProductModel").val();
+                $.ajax({
+                    url: "/Admin/A_Station/GetAccessaryByCode",
+                    type: "POST",
+                    dataType: "json",
+                    data: { text: request.term, model: model },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { value: item.Code, label: item.Code, label1: item.Name, label2: item.Model, label3: item.Price };
+                        }))
+
+                    }
+                })
+            },
+            select: function (event, ui) {
+                $("#Items_" + index + "__ProductName").val(ui.item.label1);
+                $("#Items_" + index + "__ProductModel").val(ui.item.label2);
+                $("#Items_" + index + "__Price").val(ui.item.label3);
+                var codewarr = $("#WarrantiCode").val();
+                $("#Items_" + index + "__WarrantiCode").val(codewarr);
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#Items_" + index + "__ProductModel").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Admin/A_Station/GetModel",
+                    type: "POST",
+                    dataType: "json",
+                    data: { text: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { value: item.Key, label: item.Key };
+                        }))
+
+                    }
+                })
+            },
+            select: function (event, ui) {
+                //$("#Items_" + index + "__ProductName").val(ui.item.label1);
+                //$("#Items_" + index + "__ProductModel").val(ui.item.label2);
+                //$("#Items_" + index + "__Price").val(ui.item.label3);
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+    }
+    function changeModel(id) {
+        //var index = id.split('_')[1];
+        //var model = $("#Items_" + index + "__ProductModel").val();
+        //$.ajax({
+        //    url: "/Admin/A_Station/GetAccessaryByModel",
+        //    type: "POST",
+        //    dataType: "json",
+        //    data: { text: model },
+        //    success: function (data) {
+        //        $.each(data, function (i, product) {
+        //            $("#Items_" + index + "__ProductCode").append($('<option></option>').val(product.Code).html(product.Code))
+        //        })
+        //    }
+        //})
+    }
+    function changeCode(id) {
+        var index = id.split('_')[1];
+        var code = $("#Items_" + index + "__ProductCode").val();
+        $.ajax({
+            url: "/Admin/A_Station/GetPriceByCode",
+            type: "POST",
+            dataType: "json",
+            data: { text: code },
+            success: function (data) {
+                $("#Items_" + index + "__ProductName").val(data.Name);
+                $("#Items_" + index + "__Price").val(data.Price);
+            }
+        })
+    }
+    $(document).ready(function () {
+        
+    })
+
+</script>

@@ -1,0 +1,590 @@
+﻿@model Mediamart.Models.Product
+@{
+    ViewBag.Title = "kích hoạt";
+}
+
+<div class="col-md-12 text-center pt-5">
+    <img alt="Bảo hành điện tử Mediamart" src="~/Image/line-home.png" class="img-responsive" />
+</div>
+
+<div class="home-act">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>KÍCH HOẠT BẢO HÀNH</h2>
+            <div class="home-act-content">
+                <div class="form">
+                    <form>
+                        <div class="form-horizontal">
+                            <div class="form-group row">
+                                <table class="col-md-6">
+                                    <tr>
+                                        <td colspan="2">
+                                            <p class="title">
+                                                Thông tin kích hoạt
+                                            </p>
+                                            <p class="description">
+                                                Vui lòng nhập đúng thông tin khách hàng kích hoạt để chúng tôi hỗ trợ được tốt nhất.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Số điện thoại: </label></td>
+                                        <td><input class="form-control" type="text" required id="Phone" name="Phone" value="@Model.Active_phone" onchange="GetCustomer()" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Email: </label></td>
+                                        <td><input class="form-control" type="text" required id="Email" name="Email" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Họ và tên: </label></td>
+                                        <td><input class="form-control" type="text" required id="CusName" name="CusName" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Thành phố/ Tỉnh: </label></td>
+                                        <td><select name="Province" id="Province" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Quận/ Huyện: </label></td>
+                                        <td><select name="District" id="District" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Phường/ Xã: </label></td>
+                                        <td><select name="Ward" id="Ward" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Địa chỉ: </label></td>
+                                        <td><input class="form-control" type="text" required id="Address" name="Address" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="col-md-6">
+                                    <tr>
+                                        <td colspan="2">
+                                            <p class="title">
+                                                Thông tin sản phẩm
+                                            </p>
+                                            <p class="description">
+                                                Nhập Serial của sản phẩm sau đó chọn KÍCH HOẠT BẢO HÀNH
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Mã cào: </label></td>
+                                        <td><input class="form-control" type="text" required id="Code" name="Code" value="@Model.Code" onchange="GetProduct()" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Tên sản phẩm: </label></td>
+                                        <td><input class="form-control" type="text" required id="ProductName" name="ProductName" value="@Model.Name" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Model: </label></td>
+                                        <td><input class="form-control" type="text" required id="Model" name="Model" value="@Model.Model" onchange="GetIframe()" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Thương hiệu: </label></td>
+                                        <td><input class="form-control" type="text" required id="Trademark" name="Trademark" value="@Model.Trademark" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Ngày mua hàng: </label></td>
+                                        <td>
+                                            <div class="input-group date" data-date-autoclose="true" data-provide="datepicker" data-date-format="dd/mm/yyyy">
+                                                <input class="form-control" type="text" required id="Buydate" name="Buydate" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Trạng thái: </label></td>
+                                        <td>
+                                            @if (Model.Status == 0)
+                                            {
+                                                <input class="form-control" type="text" readonly required id="Status" name="Status" value="Chưa kích hoạt" />
+                                            }
+                                            else
+                                            {
+                                                <input class="form-control" type="text" readonly required id="Status" name="Status" value="Kích hoạt" />
+                                            }
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label class="control-label">Ngày KH: </label></td>
+                                        <td>
+                                            @if (Model.Status > 0)
+                                            {
+                                                <input class="form-control" type="text" readonly required id="Active_date" name="Active_date" value="@Model.Active_date.Value.ToString("dd/MM/yyyy")" />
+                                            }
+                                            else
+                                            {
+                                                <input class="form-control" type="text" readonly required id="Active_date" name="Active_date" value="" />
+                                            }
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Ngày HH: </label></td>
+                                        <td>
+                                            @if (Model.Status > 0)
+                                            {
+                                                <input class="form-control" type="text" readonly required id="End_date" name="End_date" value="@Model.End_date.Value.ToString("dd/MM/yyyy")" />
+                                            }
+                                            else
+                                            {
+                                                <input class="form-control" type="text" readonly required id="End_date" name="End_date" value="" />
+                                            }
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr style="display:none">
+                                        <td><label class="control-label">Người tạo: </label></td>
+                                        <td><input class="form-control" type="text" required id="Create" name="Create" value="@User.Identity.Name" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn btn-danger btn-of-active" onclick="sendForm()">KÍCH HOẠT BẢO HÀNH</button>
+                                </div>
+                                @*<div class="col-md-6 text-center">
+                                    <a class="btn btn-default rounded-pill btn-doithuong btn-of-active" href="/dang-nhap">TRA CỨU/ĐỔI THƯỞNG</a>
+                                </div>*@
+
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @*<div class="col-md-12">
+                <img src="~/image/ajax-loader.gif" class="loader" id="loader" style="display:none;" />
+                <div class="alert alert-success w3-animate-right" id="box-result">
+                    <div class="panel">
+                        <p class="message" id="rMessage"></p>
+                        <table class="table" id="table-result">
+                            <tr>
+                                <td>Tên sản phẩm: </td>
+                                <td id="rName"></td>
+                            </tr>
+                            <tr>
+                                <td>Serial: </td>
+                                <td id="rSerial"></td>
+                            </tr>
+                            <tr>
+                                <td>Model: </td>
+                                <td id="rModel"></td>
+                            </tr>
+                            <tr>
+                                <td>Thương hiệu: </td>
+                                <td id="rTrademark"></td>
+                            </tr>
+                            <tr>
+                                <td>Ngày kích hoạt: </td>
+                                <td id="rActive_date"></td>
+                            </tr>
+                            <tr>
+                                <td>Hạn bảo hành: </td>
+                                <td id="rLimited"></td>
+                            </tr>
+                            <tr>
+                                <td>Ngày hết hạn: </td>
+                                <td id="rEnd_date"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" id="rBonus"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>*@
+
+    </div>
+</div>
+@*<div class="row">
+    <iframe style="width:100%; height:700px;" src="" id="iframe"></iframe>
+</div>*@
+<!-- MODAL CREATE -->
+<div class="modal" tabindex="-1" role="dialog" id="modal-active" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body" id="createbody">
+                <p class="message text-center title" id="rMessage">KÍCH HOẠT THÀNH CÔNG</p>
+                <table class="table-active-success" id="table-result">
+                    <tr>
+                        <td>Tên sản phẩm: </td>
+                        <td id="rName"></td>
+                    </tr>
+                    <tr>
+                        <td>Serial: </td>
+                        <td id="rSerial"></td>
+                    </tr>
+                    <tr>
+                        <td>Model: </td>
+                        <td id="rModel"></td>
+                    </tr>
+                    <tr>
+                        <td>Thương hiệu: </td>
+                        <td id="rTrademark"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày kích hoạt: </td>
+                        <td id="rActive_date"></td>
+                    </tr>
+                    <tr>
+                        <td>Hạn bảo hành: </td>
+                        <td id="rLimited"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày hết hạn: </td>
+                        <td id="rEnd_date"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="rBonus" class="text-danger font-weight-bold">Chúc mừng trúng thưởng</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="text-center form-group">
+                <a class="btn btn-outline-light rounded-pill btn-doithuong" href="/dang-nhap">TRA CỨU/ĐỔI THƯỞNG</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREATE -->
+<div class="modal" tabindex="-1" role="dialog" id="modal-active-err" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body" id="">
+                <p class="message text-center title">KÍCH HOẠT THẤT BẠI</p>
+                <p class="text-center" id="erMessage"></p>
+            </div>
+            <div class="text-center form-group">
+                <button class="btn btn-outline-light rounded-pill btn-doithuong" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREATE -->
+<div class="modal" tabindex="-1" role="dialog" id="modal-start" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <p class="text-center">
+                Chào mừng bạn đến với<br />
+                hệ thống bảo hành của MEDIAMART
+            </p>
+            <h3 class="text-center">HÃY NHẬP SỐ ĐIỆN THOẠI<br /> ĐỂ KÍCH HOẠT BẢO HÀNH</h3>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="number" class="form-control" id="cPhone" style="margin:auto" />
+                    <p id="cErr" class="text-danger text-center"></p>
+                </div>
+            </div>
+            <div class="text-center form-group">
+                <button type="button" class="btn btn-danger rounded-pill" onclick="checkPhone()"> XÁC NHẬN</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/dateformat.js"></script>
+    <script>
+        var apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["DOMAIN"]';
+        function sendForm() {
+
+            var code = $('#Code').val();
+            var phone = $('#Phone').val();
+            var cusname = $('#CusName').val();
+            var province = $('#Province').val();
+            var district = $('#District').val();
+            var ward = $('#Ward').val();
+            var address = $('#Address').val();
+            var buydate = $('#Buydate').val();
+            var create = $('#Create').val();
+
+            $.ajax({
+                url: apiUrl +'/api/action/active',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    Chanel: "WEB", Phone: phone, CusName: cusname,
+                    Province: province, District: district, Ward: ward, Address: address,
+                    Code: code, Buydate: buydate,Active_by:create
+                },
+                success: function (result) {
+                    //hien thi message
+
+                    //hien thi thong tin san pham
+                    if (result.Data.length > 0) {
+                        $('#modal-active').modal('show');
+
+                        var product = result.Data[0];
+                        $('#rName').html(product.Name);
+                        $('#rSerial').html(product.Code);
+                        $('#rModel').html(product.Model);
+                        $('#rTrademark').html(product.Trademark);
+                        $('#rActive_date').html(product.Activedate);
+                        $('#rLimited').html(product.Limited);
+                        $('#rEnd_date').html(product.Enddate);
+                        //if (product.Bonus.length > 5) {
+                        //    $('#rBonus').html("Chúc mừng bạn nhận được CTKM của ELMICH cộng " + product.Bonus);
+                        //}
+                    } else {
+                        $('#modal-active-err').modal('show');
+                        $('#erMessage').html(result.Message);
+
+
+                    }
+                }
+            });
+
+        }
+        function GetProduct() {
+            var code = $("#Code").val();
+            $.ajax
+                ({
+                    url: apiUrl + '/api/action/getproduct?code=' + code,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $('#ProductName').val("");
+                        $('#Model').val("");
+                        $('#Trademark').val("");
+                        $("#Status").val("");
+                        $("#Active_date").val("");
+                        $("#End_date").val("");
+                        if (result.Data.length > 0) {
+                            var product = result.Data[0];
+                            $("#ProductName").val(product.Name);
+                            $("#Model").val(product.Model);
+                            $("#Trademark").val(product.Trademark);
+                            //if (product.Model.length > 5) {
+                            //    GetIframe();
+                            //}
+                            if (product.Status == 1) {
+                                var date = new Date(product.Active_date);
+                                var dd = String(date.getDate()).padStart(2, '0');
+                                var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+                                var yyyy = date.getFullYear();
+                                var datee = new Date(product.End_date);
+                                var dde = String(datee.getDate()).padStart(2, '0');
+                                var mme = String(datee.getMonth() + 1).padStart(2, '0'); //January is 0!
+                                var yyyye = datee.getFullYear();
+                                $("#Status").val("Kích hoạt");
+                                $("#Active_date").val(yyyy + "/" + mm + "/" + dd);
+                                $("#End_date").val(yyyye + "/" + mme + "/" + dde);
+                            }
+                        }
+
+                    }
+                });
+        }
+        function GetCustomer() {
+            var phone = $("#Phone").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getcustomer?phone=' + phone,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $('#Province').empty();
+                        $('#District').empty();
+                        $('#Ward').empty();
+                        $("#Address").val("");
+                        if (result.Data.length > 0) {
+                            var product = result.Data[0];
+                            if (product.Province.length>3) {
+                                $('#Province').append(new Option(product.Province, product.Province, true, true));
+                                $('#District').append(new Option(product.District, product.District, true, true));
+                                $('#Ward').append(new Option(product.Ward, product.Ward, true, true));
+                                $("#Address").val(product.Address);
+                                $("#CusName").val(product.Name);
+                            }
+                        }
+
+                    }
+                });
+        }
+        $("#Province").click(function () {
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getprovince',
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $("#District").empty();
+                        $("#Ward").empty();
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#Province option").length < 3) {
+
+                                $.each(product, function (i, province) {
+                                    $("#Province").append($('<option></option>').val(province).html(province))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+        $("#District").click(function () {
+            var name = $("#Province").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getdistrict?province=' + name,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $("#Ward").empty();
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#District option").length < 3) {
+                                $.each(product, function (i, district) {
+                                    $("#District").append($('<option></option>').val(district).html(district))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+        $("#Ward").click(function () {
+            var name = $("#District").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getward?district=' + name,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#Ward option").length < 3) {
+                                $.each(product, function (i, ward) {
+                                    $("#Ward").append($('<option></option>').val(ward).html(ward))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+        //function GetIframe() {
+        //    $('#iframe').css('display', 'none');
+        //    var Model = $("#Model").val();
+        //    if (Model.length > 3) {
+        //        $.ajax
+        //            ({
+        //                url: apiUrl + 'api/action/getiframe?Model=' + Model,
+        //                type: 'GET',
+        //                datatype: 'application/json',
+        //                contentType: 'application/json',
+        //                success: function (result) {
+        //                    if (result.Status == 1) {
+        //                        $("#iframe").attr("src", result.Message);
+        //                        $('#iframe').css('display', 'block');
+        //                    }
+        //                }
+        //            });
+        //    }
+        //}
+        $(document).ready(function () {
+            //$('#modal-active').modal('show');
+            var phone = $("#Phone").val();
+            if (phone.length == 0) {
+                $('#modal-start').modal('show');
+            }
+
+            //GetIframe();
+
+            $.ajax
+                ({
+                    url: apiUrl + '/api/action/getcustomer?phone=' + phone,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $('#Province').empty();
+                        $('#District').empty();
+                        $('#Ward').empty();
+                        $("#Address").val("");
+                        if (result.Data.length > 0) {
+                            var product = result.Data[0];
+                            if (product.Province.length > 3) {
+                                $('#Province').append(new Option(product.Province, product.Province, true, true));
+                                $('#District').append(new Option(product.District, product.District, true, true));
+                                $('#Ward').append(new Option(product.Ward, product.Ward, true, true));
+                                $("#Address").val(product.Address);
+                                $("#CusName").val(product.Name);
+                            }
+                        }
+
+                    }
+                });
+        })
+        function checkPhone() {
+            $('#cErr').css('display', 'none');
+            var phone = $("#cPhone").val();
+            if (phone.length != 10) {
+                $('#cErr').html('Số điện thoại không đúng.');
+                $('#cErr').css('display', 'block');
+            }
+            else {
+                $('#modal-start').modal('hide');
+                $('#cErr').css('display', 'none');
+                $.ajax
+                    ({
+                        url: apiUrl + '/api/action/getcustomer?phone=' + phone,
+                        type: 'GET',
+                        datatype: 'application/json',
+                        contentType: 'application/json',
+                        success: function (result) {
+                            $('#Province').empty();
+                            $('#District').empty();
+                            $('#Ward').empty();
+                            $("#Address").val("");
+                            if (result.Data.length > 0) {
+                                var product = result.Data[0];
+                                if (product.Province.length > 3) {
+                                    $('#Phone').val(phone);
+                                    $('#Province').append(new Option(product.Province, product.Province, true, true));
+                                    $('#District').append(new Option(product.District, product.District, true, true));
+                                    $('#Ward').append(new Option(product.Ward, product.Ward, true, true));
+                                    $("#Address").val(product.Address);
+                                    $("#CusName").val(product.Name);
+                                }
+                            }
+
+                        }
+                    });
+
+            }
+        }
+
+    </script>
+}

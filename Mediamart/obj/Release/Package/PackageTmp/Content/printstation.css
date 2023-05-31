@@ -1,0 +1,64 @@
+﻿body {
+    font-family: arial, sans-serif;
+}
+
+.row {
+    display: flex;
+}
+
+.col-md-8 {
+    flex: 0 0 66.66667%;
+    max-width: 66.66667%;
+}
+
+.col-md-5 {
+    flex: 0 0 41.66667%;
+    max-width: 41.66667%;
+    width: 41.66667%;
+}
+
+
+.col-md-6 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+
+.col-md-7 {
+    flex: 0 0 58.33333%;
+    max-width: 58.33333%;
+    width: 58.33333%;
+}
+
+h1 {
+    font-size: 21px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.lb-bill {
+    width: 120px;
+    float: left;
+    
+}
+
+.lb-input input {
+    border: 0;
+    border-bottom: 1px solid #e1e3ea;
+    border-radius: unset;
+    width: 300px;
+}
+.table {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+    display: table;
+}
+.table-bordered td, .table-bordered th {
+    border: 1px solid #5e6773;
+    height: 43px;
+    padding: 3px;
+}

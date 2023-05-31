@@ -1,0 +1,248 @@
+﻿
+@{
+    ViewBag.Title = "Trang chủ";
+}
+<style>
+    body {
+        font-size: 16px;
+    }
+
+    .home-act {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+        .home-act ul li {
+            color: #0056b3;
+        }
+
+    .table tr td {
+        border: none;
+        padding: 3px 0;
+        text-align: justify;
+        font-size: 14px;
+    }
+
+        .table tr td:first-child {
+            width: 150px;
+        }
+
+    .message {
+        font-weight: bold;
+        color: #e91d29;
+    }
+
+    #box-result {
+        display: none;
+    }
+
+    #table-result {
+        display: none;
+    }
+
+    .red {
+        color: #ed1c24;
+        font-weight: bold;
+    }
+
+    .btn-send {
+        background-color: #e3007b;
+        color: white;
+        font-weight: bold;
+    }
+
+    .alert-success {
+        background-color: #e1e1e1;
+    }
+
+    h2 {
+        font-size: 18px;
+        color: #333333;
+        font-weight: bold;
+    }
+    
+    
+
+    @@media(max-width:576px) {
+        .col-xs-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+    }
+</style>
+<div class="carousel slide" data-ride="carousel" id="demo">
+
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+        <li data-target="#demo" data-slide-to="0" class="active"></li>
+        <li data-target="#demo" data-slide-to="1"></li>
+    </ul>
+
+    <!-- The slideshow -->
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/Image/Banner-home-mediamart.png" alt="">
+        </div>
+        <div class="carousel-item">
+            <img src="~/Image/Banner-home-mediamart.png" alt="">
+        </div>
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </a>
+</div>
+<div class="container home-act">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="home-act-content">
+                <p class="pink-text">Giới thiệu</p>
+                <h2>KÍCH HOẠT BẢO HÀNH</h2>
+                <p>
+                    Khách hàng tìm mã bảo hành được dán trên sản phẩm.<br />
+                    Sử dụng mã Serial để kích hoạt qua Website bảo hành hoặc quét mã barcode trên tem bảo hành để tự dộng lấy thông tin kích hoạt qua APP.
+                </p>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="font-weight-bold">Kích hoạt bảo hành qua website</h3>
+            <p class="">
+                Truy cập
+            </p>
+            <div class="">
+                <a href="/kich-hoat" class="btn btn-send">KÍCH HOẠT NGAY</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="font-weight-bold">Kích hoạt bảo hành qua App</h3>
+            <p class="">
+                Tải ngay
+            </p>
+            <div class="row">
+                <a href="#" class="col-md-6">
+                    <img src="~/Image/android-download.jpg" class="img-responsive" alt="android-download" />
+                </a>
+                <a href="#" class="col-md-6">
+                    <img src="~/Image/ios-download.jpg" class="img-responsive" alt="ios-download" />
+                </a>
+            </div>
+        </div>
+        @*<div class="col-md-6">
+            <div class="home-act-content">
+                <h2>TRA CỨU THÔNG TIN</h2>
+                <p>
+                    Tra cứu nhanh trên tem bảo hành
+                </p>
+                <div style="overflow:hidden; padding-bottom:15px;">
+                    <form>
+                        <input class="form-control" type="text" required placeholder="Serial trên tem bảo hành" id="Code" name="Code" style="float:left;border-radius:unset" />
+                        <button type="button" class="btn btn-send" onclick="sendForm()" style="float:left;border-top-right-radius:50rem;border-bottom-right-radius:50rem;"> TRA CỨU</button>
+                    </form>
+                </div>
+            </div>
+        </div>*@
+        @*<div class="col-md-6">
+            <img src="~/image/ajax-loader.gif" class="loader" id="loader" style="display:none;" />
+            <div class="alert alert-success w3-animate-right" id="box-result">
+                <div class="panel">
+                    <p class="message" id="rMessage"></p>
+                    <table class="table" id="table-result">
+                        <tr>
+                            <td>Tên sản phẩm </td>
+                            <td id="rName"></td>
+                        </tr>
+                        <tr>
+                            <td>Serial </td>
+                            <td id="rSerial"></td>
+                        </tr>
+                        <tr>
+                            <td>Model </td>
+                            <td id="rModel"></td>
+                        </tr>
+                        <tr>
+                            <td>Thương hiệu </td>
+                            <td id="rTrademark"></td>
+                        </tr>
+                        <tr>
+                            <td>Ngày kích hoạt </td>
+                            <td id="rActive_date"></td>
+                        </tr>
+                        <tr>
+                            <td>Hạn bảo hành </td>
+                            <td id="rLimited"></td>
+                        </tr>
+                        <tr>
+                            <td>Ngày hết hạn </td>
+                            <td id="rEnd_date"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>*@
+
+        <div class="col-md-12">
+            <h2></h2>
+            <p style="font-weight:600;">YÊU CẦU BẢO HÀNH QUA WEBSITE</p>
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <a href="/bao-hanh" class="btn btn-send">YÊU CẦU BẢO HÀNH</a>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <a href="https://mediamart.vn/chinh-sach-chung/chinh-sach-doi-tra-hang" target="_blank" class="btn btn-send">CHÍNH SÁCH BẢO HÀNH</a>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <a href="https://mediamart.vn/bao-hanh" target="_blank" class="btn btn-send">TRUNG TÂM BẢO HÀNH</a>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <a href="tel:19006788" target="_blank" class="btn btn-send">LIÊN HỆ TRỰC TIẾP</a>
+                </div>
+            </div>
+            <p>Hoặc liên hệ số điện thoại chăm sóc khách hàng :<a href="tel:19006788" style="color: #e3007b; font-weight:700;"> 19006788</a></p>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        var apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["DOMAIN"]';
+        function sendForm() {
+            //reset result
+            $("#table-result").css("display", "none");
+            $("#box-result").css("display", "none");
+            $('#loader').css('display', 'block');
+
+            var serial = $('#Code').val();
+            $.ajax({
+                url: apiUrl + '/api/action/searchproduct?code=' + serial,
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    //hien thi message
+                    $('#loader').css('display', 'none');
+                    $("#box-result").css("display", "block");
+                    $('#rMessage').html(result.Message);
+
+                    //hien thi thong tin san pham
+                    if (result.Data.length > 0) {
+                        var product = result.Data[0];
+                        $("#table-result").css("display", "block");
+                        $('#rName').html(product.Name);
+                        $('#rSerial').html(product.Code);
+                        $('#rModel').html(product.Model);
+                        $('#rTrademark').html(product.Trademark);
+                        $('#rActive_date').html(product.Activedate);
+                        $('#rLimited').html(product.Limited);
+                        $('#rEnd_date').html(product.Enddate);
+                    }
+                }
+            });
+
+        }
+    </script>
+}

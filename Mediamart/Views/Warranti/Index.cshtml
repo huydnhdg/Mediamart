@@ -1,0 +1,265 @@
+﻿@{
+    ViewBag.Title = "bảo hành";
+}
+<style>
+    .table tr td {
+        border: none;
+        padding: 3px 0;
+        text-align: justify;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+        .table tr td:first-child {
+            width: 150px;
+        }
+
+    .message {
+        font-weight: bold;
+        color: #e91d29;
+    }
+
+    #box-result {
+        display: none;
+    }
+</style>
+<div class="col-md-12 text-center pt-5">
+    <img alt="Bảo hành điện tử Mediamart" src="~/Image/line-home.png" class="img-responsive" />
+</div>
+<div class="container home-act">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="home-act-content">
+                
+                <h2 style="">YÊU CẦU BẢO HÀNH TRỰC TUYẾN</h2>
+                <div class="form row">
+                    <form class="col-md-8">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <table>
+                                    <tr>
+                                        <td colspan="2" class="title" style="font-weight:700;">THÔNG TIN KHÁCH HÀNG</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Số điện thoại: </label></td>
+                                        <td><input class="form-control" type="text" required id="Phone" name="Phone" onchange="GetCustomer()" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Số liên hệ: </label></td>
+                                        <td><input class="form-control" type="text" required id="PhoneExtra" name="PhoneExtra" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Họ và tên: </label></td>
+                                        <td><input class="form-control" type="text" required id="CusName" name="CusName" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Thành phố/ Tỉnh: </label></td>
+                                        <td><select name="Province" id="Province" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Quận/ Huyện: </label></td>
+                                        <td><select name="District" id="District" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Phường/ Xã: </label></td>
+                                        <td><select name="Ward" id="Ward" class="form-control"><option value="" selected="">--Chọn--</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Địa chỉ: </label></td>
+                                        <td><input class="form-control" type="text" required id="Address" name="Address" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="title" style="font-weight:700;">THÔNG TIN SẢN PHẨM</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Mã cào: </label></td>
+                                        <td><input class="form-control" type="text" required id="ProductCode" name="ProductCode" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Model: </label></td>
+                                        <td><input class="form-control" type="text" required id="Model" name="Model" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label">Tình trạng sản phẩm: </label></td>
+                                        <td><textarea class="form-control" rows="4" cols="50" name="Note" id="Note"></textarea></td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td><label class="control-label">Người tạo: </label></td>
+                                        <td><input class="form-control" type="text" required id="Create" name="Create" value="@User.Identity.Name" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><button type="button" class="btn btn-danger" onclick="sendForm()"> YÊU CẦU BẢO HÀNH</button></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            @*<div class="form-group">
+                        <img src="~/image/ajax-loader.gif" class="loader" id="loader" style="display:none;" />
+                        <div class="alert alert-success" id="box-result">
+                            <div class="panel">
+                                <p class="message" id="rMessage"></p>
+
+                            </div>
+                        </div>
+                    </div>*@
+                        </div>
+                    </form>
+                    <div class="col-md-4">
+                        <img src="~/Image/banner-right.png" alt="active" class="img-responsive" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL CREATE -->
+<div class="modal" tabindex="-1" role="dialog" id="modal-warranty" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body" id="">
+                <h3 class="text-center">THÔNG BÁO</h3>
+                <p class="message text-center" id="rMessage"></p>
+            </div>
+            <div class="text-center form-group">
+                <button class="btn btn-outline-light rounded-pill btn-doithuong" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var apiUrl = '@System.Configuration.ConfigurationManager.AppSettings["DOMAIN"]';
+        function sendForm() {
+            //reset result
+            $("#box-result").css("display", "none");
+            $('#loader').css('display', 'block');
+
+            var phone = $('#Phone').val();
+            var phoneextra = $('#PhoneExtra').val();
+            var cusname = $('#CusName').val();
+            var province = $('#Province').val();
+            var district = $('#District').val();
+            var ward = $('#Ward').val();
+            var address = $('#Address').val();
+            var code = $('#ProductCode').val();
+            var note = $('#Note').val();
+            var create = $('#Create').val();
+            var model = $('#Model').val();
+
+            $.ajax({
+                url: apiUrl +'/api/action/warranti',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    Chanel: "WEB", Phone: phone, PhoneExtra: phoneextra, CusName: cusname,
+                    Province: province, District: district, Ward: ward, Address: address, ProductCode: code, Note: note,Createby:create,Model:model
+                },
+                success: function (result) {
+                    //hien thi message
+                    //$('#loader').css('display', 'none');
+                    //$("#box-result").css("display", "block");
+                    $('#modal-warranty').modal('show');
+                    $('#rMessage').html(result.Message);
+                }
+            });
+
+        }
+        function GetCustomer() {
+            var phone = $("#Phone").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getcustomer?phone=' + phone,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $('#Province').empty();
+                        $('#District').empty();
+                        $('#Ward').empty();
+                        $("#Address").val("");
+                        if (result.Data.length > 0) {
+                            var product = result.Data[0];
+                            if (product.Province.length>3) {
+                                $('#Province').append(new Option(product.Province, product.Province, true, true));
+                                $('#District').append(new Option(product.District, product.District, true, true));
+                                $('#Ward').append(new Option(product.Ward, product.Ward, true, true));
+                                $("#Address").val(product.Address);
+                                $("#CusName").val(product.Name);
+                            }
+                        }
+
+
+                    }
+                });
+        }
+        $("#Province").click(function () {
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getprovince',
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $("#District").empty();
+                        $("#Ward").empty();
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#Province option").length < 3) {
+
+                                $.each(product, function (i, province) {
+                                    $("#Province").append($('<option></option>').val(province).html(province))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+        $("#District").click(function () {
+            var name = $("#Province").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getdistrict?province=' + name,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        $("#Ward").empty();
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#District option").length < 3) {
+                                $.each(product, function (i, district) {
+                                    $("#District").append($('<option></option>').val(district).html(district))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+        $("#Ward").click(function () {
+            var name = $("#District").val();
+            $.ajax
+                ({
+                    url: apiUrl +'/api/action/getward?district=' + name,
+                    type: 'GET',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        if (result.Data.length > 0) {
+                            var product = result.Data;
+                            if ($("#Ward option").length < 3) {
+                                $.each(product, function (i, ward) {
+                                    $("#Ward").append($('<option></option>').val(ward).html(ward))
+                                })
+                            }
+                        }
+                    }
+                });
+        });
+    </script>
+}

@@ -1,0 +1,162 @@
+﻿@model PagedList.IPagedList<Mediamart.Models.ProductCrack>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Product Crack";
+    int index = 0;
+}
+<div class="card">
+    <div class="card-header">Form filter</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-name" class="col-form-label">Tìm kiếm</label>
+                            <div class="">
+                                <input type="text" class="form-control" name="textsearch" value="@ViewBag.textsearch">
+                                <input type="text" class="form-control hide" name="status" value="@ViewBag.status">
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="ticket-type" class="col-form-label">Model</label>
+                            <div class="">
+                                @Html.DropDownList("chanel", new SelectList(ViewBag.model, "Key", "Key"), "--Chọn--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="ticket-type" class="col-sm-9 col-form-label">Ngày tạo</label>
+                            <div class="input-daterange input-group" data-provide="datepicker" data-date-format="dd/mm/yyyy">
+                                <input class="form-control" name="start_date" value="@ViewBag.start_date">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input class="form-control" name="end_date" value="@ViewBag.end_date">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-filter"></i> Tìm kiếm</button>
+                    @if (User.IsInModule("productcrack.add"))
+                    {
+                        <a class="btn btn-info" href="/admin/productcrack/create"><i class="ti ti-plus"></i> Tạo mới</a>
+                        <a class="btn btn-warning" href="/admin/productcrack/uploadfile"><i class="ti ti-import"></i> Upload file</a>
+                    }
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Table database</h3>
+        <div class="col-md-12 text-right">
+            <div class="btn-group row">
+                <a href="/Admin/ProductCrack/Index?status=" class="btn btn-outline-light @(ViewBag.status == "" ? "active" : "")">Tất cả @ViewBag.countstatus.all</a>
+                <a href="/Admin/ProductCrack/Index?status=0" class="btn btn-outline-danger @(ViewBag.status == "0" ? "active" : "")">Mới tạo @ViewBag.countstatus.s0</a>
+                <a href="/Admin/ProductCrack/Index?status=1" class="btn btn-outline-dark @(ViewBag.status == "0" ? "active" : "")">Huỷ @ViewBag.countstatus.s1</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm" id="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mã phiếu BH</th>
+                    <th>Model</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số S/N</th>
+                    <th>Trạng thái</th>
+                    <th>Trạm BH</th>
+                    @*<th>Serial</th>*@
+                    <th>Ghi chú</th>
+                    <th>Ngày tạo</th>
+                    <th>Người tạo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td style="display:none">@item.ID</td>
+                        <td>@index</td>
+                        <td>@item.CodeWarranti</td>
+                        <td>@item.Model</td>
+                        <td>@item.Name</td>
+                        <td>@item.Serial</td>
+                        <td>
+                            @if (item.Status == 0)
+                            {
+                                <span class="text-danger">Bóc tách</span>
+                            }
+                            else
+                            {
+                                <span class="text-dark">Huỷ</span>
+                            }
+                        </td>
+                        <td>@item.Station</td>
+                        @*<td>@item.Serial</td>*@
+                        <td>@item.Note</td>
+                        <td>@item.Createdate.Value.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Createby</td>
+                        <td>
+                            <div class="btn-group">
+                                @if (User.IsInModule("productcrack.changestatus"))
+                                {
+                                    <a class="btn btn-outline-light" href="/admin/productcrack/edit/@item.ID"><i class="ti ti-eye"></i></a>
+                                    <a class="btn btn-outline-light status" href="javasript:void()"><i class="ti ti-pencil-alt"></i></a>
+                                }
+                                @if (User.IsInModule("warranti.add"))
+                                {
+                                    <a class="btn btn-outline-light addwarr" title="tạo phiếu bh"><i class="ti ti-support text-warning"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="showing">Showing @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</div>
+            </div>
+            <div class="col-sm-6">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, textsearch = ViewBag.textsearch, chanel = ViewBag.chanel, status = ViewBag.status, start_date = ViewBag.start_date, end_date = ViewBag.end_date }))
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("#table .addwarr").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Warranti/Create?Crack_Id=" + Id,
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+        $("#table .status").click(function () {
+            var Id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/ProductCrack/ChangeStatus",
+                data: '{Id: "' + Id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#createbody').html(response);
+                    $('#createmodal').modal('show');
+                }
+            });
+        });
+    </script>
+}

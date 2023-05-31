@@ -1,0 +1,198 @@
+﻿@model Mediamart.Areas.Admin.Data.ProductCrackModel
+@{
+    ViewBag.Title = "Product Crack";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Thông tin sản phẩm</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("CreateConfirm", "ProductCrack", new { area = "Admin" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            @Html.Label("Mã BH", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.CodeWarranti, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Số S/N", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Serial, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Trạm BH", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Station, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Tên sản phẩm", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        @*<div class="form-group row">
+                            @Html.Label("Serial", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Serial, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>*@
+                        <div class="form-group row">
+                            @Html.Label("Code", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Model", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Model, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Note", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            @Html.Label("Linh kiện", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div style="font-size: 13px" class="col-md-8">
+                                <a href="javascript:void(0);" id="addRowType" onclick="addRowType();"><i class="ti ti-plus" data-name="mdi-plus"></i> Thêm mới</a>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <table style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>Tên linh kiện</th>
+                                        <th>Mã linh kiện</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbltype">
+                                    @for (var i = 0; i < Model.Items.Count(); i++)
+                                    {
+                                        <tr>
+                                            <td>@Html.EditorFor(model => model.Items[i].Name, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                            <td>@Html.EditorFor(model => model.Items[i].Code, new { htmlAttributes = new { @class = "form-control" } })</td>
+
+                                            <td><a href="/admin/productcrack/deleteitem?id=@Model.Items[i].Id" title="xoá linh kiện" class="text-danger"><i class="ti ti-close"></i></a></td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Lưu</button>
+                    <a href="/admin/productcrack" class="btn btn-danger"><i class="ti ti-close"></i> Thoát</a>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        function addRowType() {
+            var index = $("#tbltype").children("tr").length;
+            var id = '<td><input class="form-control " id="Items_' + index + '__Name" name="Items[' + index + '].Name" type="text" "/></td >';
+            var name = '<td><input class="form-control" id="Items_' + index + '__Code" name="Items[' + index + '].Code" type="text"/></td >';
+            var newRow = "<tr id='trBooktype" + index + "'>" + id + name + "</tr>";
+            $("#tbltype").append(newRow);
+            $("#Items_" + index + "__Name").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/ProductCrack/GetAccessary",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name, label1: item.Code };
+                            }))
+
+                        }
+                    })
+
+                },
+                select: function (event, ui) {
+                    $("#Items_" + index + "__Name").val(ui.item.label);
+                    $("#Items_" + index + "__Code").val(ui.item.label1);
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+            $("#Items_" + index + "__Code").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/ProductCrack/GetAccessary",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Code, value: item.Code, label1: item.Name };
+                            }))
+
+                        }
+                    })
+
+                },
+                select: function (event, ui) {
+                    $("#Items_" + index + "__Name").val(ui.item.label1);
+                    $("#Items_" + index + "__Code").val(ui.item.label);
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        }
+        $(document).ready(function () {
+
+            $("#Station").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/ProductCrack/GetStation",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.UserName + " - " + item.FullName, value: item.UserName, label1: item.FullName };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    $("#Station").val(ui.item.label1);
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+            $("#Name").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Admin/ProductCrack/GetProduct",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    $("#Name").val(ui.item.label1);
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Mediamart.Models.Notification>
+@{
+    var total = Model.Count();
+}
+<li class="nav-item dropdown">
+    <a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
+        <i class="ti-bell"></i>
+        <span class="badge bg-danger" id="messages">0</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right notifications">
+        <li class="dropdown-item">Bạn có  @total thông báo mới chưa xem</li>
+        <div class="list-item-notif" style="max-height: 500px; overflow-y: scroll;">
+
+        </div>
+        @*@foreach (var item in Model)
+        {
+            var time = item.Createdate.Value.ToString("HH:mm dd/MM/yyyy");
+            <li class="dropdown-item" id="@item.Id">
+                <a href="@item.DetailsURL" class="notification-item" onclick="isReadNotif(@item.Id)">
+                    <i class="fa fa-bullhorn custom-bg-purple"></i>
+                    <p><span class="text">@item.Title</span> <span class="timestamp">@time</span></p>
+                </a>
+            </li>
+        }*@
+
+        <li class="dropdown-item"><a href="/admin/notification" class="more">xem tất cả</a></li>
+    </ul>
+</li>
+<script>
+    function isReadNotif(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Home/ReadNotif",
+            data: '{Id: "' + Id + '" }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                //trong danh sach da bi loai bo khong can xu ly gi them
+            }
+        });
+    }
+</script>

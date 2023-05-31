@@ -1,0 +1,109 @@
+﻿@model Mediamart.Areas.Admin.Data.Accessary.A_Export_Model
+@{
+    int index = 0;
+}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Đề xuất linh kiện</h3>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("ActionConfirm", "A_Export", FormMethod.Post, new { area = "Admin", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            @Html.Label("Trung tâm", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Center, new { htmlAttributes = new { @class = "form-control", @Value = "Mediamart Long Biên" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("hub", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Hub, new { htmlAttributes = new { @class = "form-control", @Value = "S005" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Tên người nhận", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.CusName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Kho nhận", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Import_Warehouse, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Địa chỉ", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @Value = "Số 3 Nguyễn Văn Linh Gia Thụy Long Biên Hà Nội" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Xuất tại kho", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Export_Warehouse, new { htmlAttributes = new { @class = "form-control", @Value = "M000" } })</div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.Label("Lý do xuất", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">@Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })</div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 access">
+                        <table class="col-md-12 table table-bordered">
+                            <thead class="bg-danger" style="color:#fff">
+                                <tr>
+                                    <th>Mã LK</th>
+                                    <th>Tên LK</th>
+                                    <th>Model</th>
+                                    <th class="hidden">Số lượng</th>
+                                    <th>Đơn giá</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblBills">
+                                @for (var i = 0; i < Model.Items.Count(); i++)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductCode, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductName, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].ProductModel, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                        <td class="hidden">@Html.EditorFor(model => model.Items[i].Quantity, new { htmlAttributes = new { @class = "form-control", @Value="1" } })</td>
+                                        <td>@Html.EditorFor(model => model.Items[i].Price, new { htmlAttributes = new { @class = "form-control" } })</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                        @*<div class="text-right">
+                                <a href="javascripts:void(0)" id="addRow" style="font-size:21px;font-weight:bold" class="text-danger" onclick="addRow();"><i class="ti-plus" data-name="mdi-plus"></i> </a>
+                            </div>*@
+                    </div>
+                </div>
+
+
+                <div class="form-group text-center">
+                    @if (User.IsInRole(Mediamart.Utils.Common.Roles.KEY) && Model.Status == 3)
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Xác nhận</button>
+                    }
+                    else if (User.IsInRole(Mediamart.Utils.Common.Roles.STOCKER) && (Model.Status == 0 || Model.Status == 3))
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Duyệt phiếu</button>
+                    }
+                    else if (User.IsInRole(Mediamart.Utils.Common.Roles.ACCOUNTANT) && Model.Status == 1)
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Duyệt phiếu</button>
+                    }
+                    else if (User.IsInRole(Mediamart.Utils.Common.Roles.ADMIN) && Model.Status < 3)
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Duyệt phiếu</button>
+                    }
+                    else if (User.IsInRole(Mediamart.Utils.Common.Roles.KEY) && (Model.Status == -1 || Model.Status == 4))
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> Xác nhận</button>
+                    }
+                    <button class="btn btn-danger" data-dismiss="modal"><i class="ti ti-close"></i> Thoát</button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
